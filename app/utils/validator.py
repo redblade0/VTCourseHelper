@@ -72,5 +72,61 @@ class InputValidator:
         
         return True, course_id.lower()
     
+    @staticmethod
+    def parse_full_query(query: str) -> Optional[dict]:
+        """
+        Parses a fully input string "First Last dept course_id"
+        @args: query: full query
+        @return: dict with professor, department, and course_id or None
+        """
+        if not query or not isinstance(query, str):
+            return None
+        
+        query = query.strip()
+        match = InputValidator.FULL_QUERY_PATTERN(query)
 
+        if not match:
+            logger.warning(f"Invalid query format: {query}")
+            return None
+        
+        first_name, last_name, dept, course_id = match.groups()
+
+        professor = f"{first_name} {last_name.strip()}".lower()
+        department = dept.lower()
+
+        return {
+            'professor': professor,
+            'department': department,
+            'course_id': course_id,
+        }
     
+    @staticmethod
+    def validate_and_parse(professor: str = None, department: str = None,
+                           course_id: str = None, query: str = None) -> Optional[dict]:
+        """
+        Validates and parse user input
+        @args:
+            professor: professor name
+            department: department code
+            course_id: course id
+            query: full query
+        @return: dictionary with validated data or None if invalid
+        """
+        if query:
+            parsed = InputValidator.parse_full_query(query)
+            if parsed:
+                return parsed
+            return None
+        
+        prof_valid, professor_normalized = InputValidator.validate_professor_name(professor)
+        dept_valid, dept_normalized = InputValidator.validate_department(department)
+        course_id_valid, course_id_normalized = InputValidator.validate_course_id(course_id)
+
+        if not (prof_valid and dept_valid and course_id_valid):
+            return None
+        
+        return {
+            'professor': professor_normalized,
+            'department': dept_normalized,
+            'course_id': course_id_normalized,
+        }
