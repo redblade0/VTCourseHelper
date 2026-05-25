@@ -6,7 +6,7 @@ from app.models.cache import utc_now
 
 logger = logging.getLogger(__name__)
 
-class CacheManager():
+class CacheManager:
     """Manages cache"""
 
     @staticmethod
@@ -33,7 +33,7 @@ class CacheManager():
             }
 
         except Exception as e:
-            logger.error(f"RMP chache get error: {e}")
+            logger.error(f"RMP chache get error: {str(e)}")
             return None
         
     @staticmethod
@@ -49,7 +49,7 @@ class CacheManager():
                 existing = RMPCache(
                     professor_name=professor_name,
                     average_rating=data.get('average_rating'),
-                    average_difficulty=data.get('average_difficulty')
+                    average_difficulty=data.get('average_difficulty'),
                 )
                 db.session.add(existing)
 
