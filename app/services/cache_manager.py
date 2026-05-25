@@ -2,7 +2,6 @@
 import logging
 from flask import current_app
 from app.models import db, RMPCache, RedditCache
-from app.models.cache import utc_now
 
 logger = logging.getLogger(__name__)
 
