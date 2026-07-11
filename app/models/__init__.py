@@ -1,4 +1,7 @@
+"""
+Database Models Package
+"""
 
-from app.models.cache import db, RMPCache, RedditCache
- 
-__all__ = ['db', 'RMPCache', 'RedditCache']
+from .cache import db, CourseCache
+
+__all__ = ['db', 'CourseCache']

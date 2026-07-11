@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: vt_coursehelper_db
+    environment:
+      POSTGRES_USER: ${DB_USER:-vt_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-vt_password}
+      POSTGRES_DB: ${DB_NAME:-vt_coursehelper}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-vt_user} -d ${DB_NAME:-vt_coursehelper}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vt_network
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: vt_coursehelper_app
+    environment:
+      FLASK_ENV: ${FLASK_ENV:-development}
+      FLASK_DEBUG: ${FLASK_DEBUG:-False}
+      DATABASE_URL: postgresql://${DB_USER:-vt_user}:${DB_PASSWORD:-vt_password}@postgres:5432/${DB_NAME:-vt_coursehelper}
+      RMP_TIMEOUT: ${RMP_TIMEOUT:-10}
+      REDDIT_TIMEOUT: ${REDDIT_TIMEOUT:-10}
+      CACHE_EXPIRY_DAYS: ${CACHE_EXPIRY_DAYS:-7}
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - vt_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  vt_network:
+    driver: bridge

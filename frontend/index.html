@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VT CourseHelper</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span>VT</span>CourseHelper</h1>
+            <p class="subtitle">Search for professor ratings & course discussions</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="query" 
+                    placeholder="Arthur Ball ECE 1004"
+                    onkeypress="if(event.key === 'Enter') search()"
+                    autofocus
+                >
+                <button onclick="search()">Search</button>
+            </div>
+            <p class="helper-text">Format: FirstName LastName DEPT XXXX</p>
+        </div>
+
+        <div id="results" class="results"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
